@@ -1,17 +1,23 @@
-import dotenv from 'dotenv';
-dotenv.config({quiet:true});
+import dotenv from "dotenv";
+dotenv.config({ quiet: true });
+
+import cookieParser from "cookie-parser";
 import express from "express";
-import UserRouter from './src/routes/user/user.route.js'
-import { errorMiddleware } from './src/middlewares/error.middleware.js';
-import cookieParser from 'cookie-parser';
 
+import { errorMiddleware } from "./src/middlewares/error.middleware.js";
 
-const app=express();
-app.use(express.json());  //? to handle json data
-app.use(express.urlencoded({extended:true}))  //? to handle form data
+import userRoutes from "./src/routes/user/user.route.js";
+import addressRoutes from './src/routes/shop/address.route.js'
 
-app.use("/api/user",UserRouter);
+const app = express();
 
-app.use(cookieParser)
+app.use(cookieParser());
+app.use(express.json()); //? to handle json data
+app.use(express.urlencoded({ extended: true })); //? to handle form data
+
+app.use("/api/user", userRoutes);
+app.use("/api/address",addressRoutes)
+
 app.use(errorMiddleware);
+
 export default app;

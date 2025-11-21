@@ -1,12 +1,20 @@
-import CustomError from "../../utils/customError.js";
+import CustomError from "../../utils/CustomError.util.js";
 
 export const validate = (schema) => {
   return (req, res, next) => {
-    const { error, value } = schema.validate(req.body, { abortEarly: false });
-    if (error) {
-      next(new CustomError(400, `${error.details.map((ele) => ele.message)}`));
-    }
+    const { error, value } = schema.validate(req.body, {
+      abortEarly: false,
+      // allUnknown: false,
+    });
 
+    if (error) {
+      next(
+        new CustomError(
+          400, //? status code
+          `${error.details.map((ele) => ele.message)}` //? error message
+        )
+      );
+    }
     req.body = value;
     next();
   };
