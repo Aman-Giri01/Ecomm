@@ -1,4 +1,4 @@
-import CustomError from "../../utils/CustomError.util.js";
+import CustomError from "../utils/CustomError.util.js";
 
 export const validate = (schema) => {
   return (req, res, next) => {

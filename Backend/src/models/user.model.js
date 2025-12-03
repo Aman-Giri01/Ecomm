@@ -87,12 +87,12 @@ userSchema.methods.generateEmailVerificationToken = function () {
   const randomBytes = crypto.randomBytes(32).toString("hex");
   // ? randomBytes will give to buffer , toString("hex") is convert it into hexa decimal
   this.emailVerificationToken = crypto
-    .createHash("sha256")
-    .update(randomBytes)
-    .digest("hex");
+    .createHash("sha256")  //? algorithm
+    .update(randomBytes)   //? data to be hashed
+    .digest("hex");        //? op to be displayed
 
   this.emailVerificationTokenExpiry = Date.now() + 10 * 60 * 1000;
-  return randomBytes
+  return randomBytes;
 };
 
 userSchema.methods.generateResetPasswordToken = function () {
