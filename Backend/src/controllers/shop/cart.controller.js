@@ -39,16 +39,16 @@ export const addToCart = expressAsyncHandler(async (req, res, next) => {
   }
   await existingCart.save();
 
-  // let totalAmount = 0;
-  // for (let item of existingCart.items) {
-  //   totalAmount += item.quantity * item.salePrice;
-  // }
+  let totalAmount = 0;
+  for (let item of existingCart.items) {
+    totalAmount += item.quantity * item.salePrice;
+  }
 
   new ApiResponse(
     201,
     "Product Added Successfully",
     existingCart,
-    // totalAmount.toFixed(2)
+    totalAmount.toFixed(2)
   ).send(res);
 });
 
@@ -84,15 +84,15 @@ export const removeFromCart = expressAsyncHandler(async (req, res, next) => {
   await existingCart.save({ validateBeforeSave: false });
 
   // calculate total
-  const totalAmount = existingCart.items.reduce((acc, item) => {
-    return acc + item.quantity * item.salePrice;
-  }, 0);
+  // const totalAmount = existingCart.items.reduce((acc, item) => {
+  //   return acc + item.quantity * item.salePrice;
+  // }, 0);
 
   new ApiResponse(
     201,
     "Product Removed Successfully",
     existingCart.items.length === 0 ? "No Items in Cart" : existingCart,
-    totalAmount.toFixed(2)
+    // totalAmount.toFixed(2)
   ).send(res);
 });
 
