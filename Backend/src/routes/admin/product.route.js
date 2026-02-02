@@ -20,6 +20,6 @@ router.patch("/update-image", upload.single("images"), updateImage);
 router.get("/all", getProducts);
 router.get("/:productId", getProduct);
 router.patch("/:productId", updateProduct);
-router.patch("/:productId", deleteProduct);
+router.delete("/:productId", deleteProduct);
 
 export default router;

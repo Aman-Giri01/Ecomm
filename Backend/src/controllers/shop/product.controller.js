@@ -4,7 +4,7 @@ import ApiResponse from "../../utils/ApiResponse.util.js";
 import CustomError from "../../utils/CustomError.util.js";
 
 export const fetchProducts = expressAsyncHandler(async (req, res, next) => {
-  const {
+  let {
     category = [],
     brand = [],
     sortBy,
@@ -12,46 +12,61 @@ export const fetchProducts = expressAsyncHandler(async (req, res, next) => {
     maxPrice = Number.MAX_SAFE_INTEGER,
   } = req.query;
 
-  category = category.toLocaleLowerCase();
-  brand = brand.toLocaleLowerCase();
+  //! Convert to lowercase and handle as strings
+  category = typeof category === 'string' ? category.toLowerCase() : [];
+  brand = typeof brand === 'string' ? brand.toLowerCase() : [];
 
   let filterObject = {};
   let sortObject = {};
 
+  //! Category filter
   if (category.length > 0) {
     filterObject.category = { $in: category.split(",") };
   }
+
+  //! Brand filter
   if (brand.length > 0) {
     filterObject.brand = { $in: brand.split(",") };
   }
-  if (minPrice && maxPrice) {
-    filterObject.price = { $and: [{ $gte: minPrice }, { $lte: maxPrice }] };
+
+  //! Price filter - FIXED
+  if (minPrice || maxPrice) {
+    filterObject.price = {
+      $gte: Number(minPrice),
+      $lte: Number(maxPrice)
+    };
   }
 
-  if (sortBy == "lowToHigh") {
+  //! Sort options
+  if (sortBy === "lowToHigh") {
     sortObject.price = 1;
-  }
-  if (sortBy == "highToLow") {
+  } else if (sortBy === "highToLow") {
     sortObject.price = -1;
-  }
-  if (sortBy == "aToZ") {
+  } else if (sortBy === "aToZ") {
     sortObject.name = 1;
-  }
-  if (sortBy == "zToA") {
+  } else if (sortBy === "zToA") {
     sortObject.name = -1;
   }
 
+  //! Default sort by creation date
   sortObject.createdAt = -1;
 
   let products = await ProductModel.find(filterObject).sort(sortObject);
 
-  if (products.length === 0)
+  if (products.length === 0) {
     return next(new CustomError(404, "No products found"));
+  }
 
   new ApiResponse(200, "Products Fetched Successfully", products).send(res);
 });
 
-export const fetchProduct = expressAsyncHandler(async (req, res, next) => {});
+export const fetchProduct = expressAsyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  let product = await ProductModel.findById(id);
+  if (!product) return next(new CustomError(404, "Product Not Found"));
+
+  new ApiResponse(200, "Product Fetched Successfully", product).send(res);
+});
 
 export const searchProducts = expressAsyncHandler(async (req, res, next) => {
   const keyword = req.query.keyword;

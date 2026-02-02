@@ -26,7 +26,7 @@ export const authenticate = expressAsyncHandler(async (req, res, next) => {
   if (!token || token === undefined)
     return next(new CustomError(401, "Please login to access this route"));
 
-  const decodedToken = jwt.verify(token, process.env.JWT_SECRET_KEY);
+  const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
   const user = await UserModel.findById(decodedToken.id);
   if (!user) next(new CustomError(401, "Invalid Session, Please login again")); //? {_id, username, }
 

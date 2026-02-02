@@ -68,7 +68,7 @@ export const loginUser = expressAsyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
   let existingUser = await UserModel.findOne({ email }).select("+password");
 
-  if (!existingUser) next(new CustomError(400, "Email Not Found!!!"));
+  if (!existingUser) return next(new CustomError(400, "Email Not Found!!!"));
 
   let matchPassword = await existingUser.comparePassword(password);
   if (!matchPassword) {
