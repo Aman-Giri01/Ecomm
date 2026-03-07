@@ -1,11 +1,17 @@
 import './App.css'
-import Navbar from './component/Navbar'
+import Register from './pages/Register'
+import { Routes, Route } from 'react-router-dom';
+import {Toaster} from 'react-hot-toast'
+import Login from './pages/Login';
 
 function App() {
 
   return (
     <>
-      <Navbar/>
+    <Toaster position='top-right'/>
+    {/* <Register/> */}
+    <Login/>
+    
     </>
   )
 }

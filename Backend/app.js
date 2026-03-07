@@ -3,7 +3,7 @@ dotenv.config({ quiet: true });
 
 import cookieParser from "cookie-parser";
 import express from "express";
-
+import cors from "cors";
 import { errorMiddleware } from "./src/middlewares/error.middleware.js";
 import { seedAdmin } from "./src/seed/admin.seed.js";
 
@@ -19,6 +19,13 @@ import shopReviewRoutes from "./src/routes/shop/review.route.js";
 import orderAdminRoutes from "./src/routes/admin/order.route.js"
 
 const app = express();
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
 if (process.argv[2] === "seed") {
   seedAdmin();
