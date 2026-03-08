@@ -1,84 +1,94 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { authService } from "../services/authService";
+import api from "../services/api";
 import toast from "react-hot-toast";
 
-const AuthContext=createContext();
+const AuthContext = createContext();
 
-export const UseAuth=()=>{
-    const context=useContext(AuthContext);
-    if(!context){
-        throw new Error('useAuth must be used within ThemeProvider')
+export const UseAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) throw new Error("useAuth must be used within AuthProvider");
+  return context;
+};
+
+// Try to detect admin role by calling an admin endpoint
+// Returns 'admin' if authorized, 'user' otherwise
+const detectRole = async () => {
+  try {
+    await api.get("/admin/product/all");
+    return "admin";
+  } catch {
+    return "user";
+  }
+};
+
+export const AuthProvider = ({ children }) => {
+  const [user, setUser]     = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError]   = useState(null);
+
+  const loadUser = async () => {
+    try {
+      setLoading(true);
+      // Verify session is valid
+      const res = await authService.current();
+      // Detect role by probing admin endpoint
+      const role = await detectRole();
+      setUser({ loggedIn: true, role, username: res?.payload?.username, email: res?.payload?.email, _id: res?.payload?._id, isVerified: res?.payload?.isVerified, contactNumber: res?.payload?.contactNumber });
+    } catch {
+      setUser(null);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    return context;
-}
+  useEffect(() => { loadUser(); }, []);
 
-export const AuthProvider=({children})=>{
-    const [user,setUser]=useState(null);
-    const [loading,setLoading]=useState(true);
-    const [error,setError]=useState(null);
+  const register = async (userData) => {
+    try {
+      setError(null); setLoading(true);
+      const response = await authService.register(userData);
+      toast.success(response.message || "Registered! Please verify your email.");
+      return { success: true };
+    } catch (error) {
+      const msg = error.response?.data?.message || "Registration Failed";
+      setError(msg); toast.error(msg);
+      return { success: false, error: msg };
+    } finally { setLoading(false); }
+  };
 
-    // const loadUser=async()=>{
-    //     try {
-    //         setLoading(true);
-    //         const response=await authService.current();
-    //         setUser(response.payload);
-    //     } catch (error) {
-    //         console.error('Auth check error:', error);
-    //         setUser(null);
-    //     }finally{
-    //         setLoading(false);
-    //     }
-    // }
-    // useEffect(()=>{
-    //     loadUser();
-    // },[]);
+  const login = async (credentials) => {
+    try {
+      setError(null); setLoading(true);
+      const response = await authService.login(credentials);
+      const role = await detectRole();
+      setUser({ loggedIn: true, role });
+      toast.success(response.message || "Logged in successfully!");
+      return { success: true };
+    } catch (error) {
+      const msg = error.response?.data?.message || "Login Failed";
+      setError(msg); toast.error(msg);
+      return { success: false, error: msg };
+    } finally { setLoading(false); }
+  };
 
-    // ~ Register function
-    const register=async(userData)=>{
-        try {
-            setError(null);
-            setLoading(true);
-            const response=await authService.register(userData);
-            setUser(response.payload);
-            return {success:true}
-        } catch (error) {
-            const errorMsg=error.response?.data?.message || "Registration Failed";
-            setError(errorMsg);
-            return {success:false, error:errorMsg};
-        }
+  const logout = async () => {
+    try {
+      await authService.logout();
+      setUser(null);
+      toast.success("Logged out successfully");
+      return { success: true };
+    } catch {
+      toast.error("Logout failed");
+      return { success: false };
     }
+  };
 
-    // ~ Login
-    const login=async(credentials)=>{
-        try {
-            setError(null);
-            setLoading(true);
-            const response=await authService.login(credentials);
-            setUser(response.payload);
+  const isLoggedIn = !!user?.loggedIn;
 
-            toast.success(response.message || 'Login successfully');
-            return {success:true,data:response}
-
-            
-        } catch (error) {
-            const errorMsg=error.response?.data?.message || "Login Failed";
-            setError(errorMsg);
-            toast.error(errorMsg);
-            return {success:false,error:errorMsg}
-        }finally{
-            setLoading(false);
-        }
-    }
-
-    const value={
-        register,
-        login
-    }
-    return (
-        <AuthContext.Provider value={value}>
-            {children}
-        </AuthContext.Provider>
-    )
-}
-
+  return (
+    <AuthContext.Provider value={{ user, loading, error, isLoggedIn, register, login, logout, loadUser }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
