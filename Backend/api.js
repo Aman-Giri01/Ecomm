@@ -1,7 +1,5 @@
-// This file is the Vercel serverless entry point
-// Vercel does NOT use app.listen() — it just needs the express app exported
-
 import { v2 as cloudinary } from "cloudinary";
+import mongoose from "mongoose";
 import { connectDB } from "./src/config/database.config.js";
 import app from "./app.js";
 
@@ -12,7 +10,18 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Connect DB (Vercel reuses connections between invocations)
-connectDB();
+//  Wrap app in a handler that ensures DB is connected before every request
+// Vercel serverless functions are stateless — connection may drop between calls
+let isConnected = false;
 
-export default app;
+const connectIfNeeded = async () => {
+  if (isConnected && mongoose.connection.readyState === 1) return;
+  await connectDB();
+  isConnected = true;
+};
+
+// ✅ Export a handler instead of app directly
+export default async function handler(req, res) {
+  await connectIfNeeded();
+  return app(req, res);
+}
