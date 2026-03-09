@@ -29,7 +29,7 @@ const AdminLayout = ({ children }) => {
           E
         </div>
         <div>
-          <p className="font-black text-white text-sm tracking-tight">Ecomm</p>
+          <p className="font-black text-white text-sm tracking-tight">EliteMart</p>
           <p className="text-xs text-slate-500">Admin Panel</p>
         </div>
       </div>

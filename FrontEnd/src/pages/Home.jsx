@@ -33,7 +33,7 @@ const HERO_SLIDES = [
     tag: 'Best Sellers',
     title: 'Top Rated',
     highlight: 'Products',
-    sub: 'Loved and recommended by thousands of customers.',
+    sub: 'Loved and rEliteMartended by thousands of customers.',
     gradient: 'from-slate-900 via-slate-800 to-zinc-900',
     accentColor: 'text-sky-400',
     btnClass: 'bg-sky-500 hover:bg-sky-400 shadow-sky-500/30',
@@ -306,9 +306,9 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 bg-amber-500 rounded-xl flex items-center justify-center font-black text-white text-sm shadow-md shadow-amber-500/30">E</div>
-            <span className="font-black text-white text-lg tracking-tight">Ecomm</span>
+            <span className="font-black text-white text-lg tracking-tight">EliteMart</span>
           </div>
-          <p className="text-sm text-slate-500">© 2025 Ecomm · All rights reserved</p>
+          <p className="text-sm text-slate-500">© 2025 EliteMart · All rights reserved</p>
           <div className="flex gap-5 text-sm text-slate-500">
             <button className="hover:text-white transition-colors">Privacy</button>
             <button className="hover:text-white transition-colors">Terms</button>

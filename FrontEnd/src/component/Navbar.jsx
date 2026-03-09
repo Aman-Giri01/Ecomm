@@ -76,7 +76,7 @@ const Navbar = () => {
           <div className="w-8 h-8 bg-amber-500 group-hover:bg-amber-400 transition-colors rounded-xl flex items-center justify-center font-black text-white text-sm shadow-md shadow-amber-500/30">
             E
           </div>
-          <span className="text-lg font-black text-white hidden sm:block tracking-tight">Ecomm</span>
+          <span className="text-lg font-black text-white hidden sm:block tracking-tight">EliteMart</span>
         </Link>
 
         {/* Search — desktop */}

@@ -60,7 +60,7 @@ import axios from 'axios';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "http://localhost:9000/api",
-  // ✅ FIX: Do NOT set Content-Type here globally.
+  //  FIX: Do NOT set Content-Type here globally.
   // For JSON requests axios sets it automatically.
   // For FormData requests axios must auto-set multipart/form-data with boundary.
   // Hardcoding 'application/json' here breaks all FormData/file uploads.

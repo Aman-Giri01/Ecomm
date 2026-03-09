@@ -36,7 +36,7 @@ const VerifyEmail = () => {
           <div className="w-14 h-14 bg-amber-500 rounded-2xl flex items-center justify-center shadow-lg shadow-amber-500/30 mx-auto mb-3">
             <span className="text-white font-black text-2xl">E</span>
           </div>
-          <span className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">Ecomm</span>
+          <span className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">EliteMart</span>
         </div>
 
         {/* Card */}
