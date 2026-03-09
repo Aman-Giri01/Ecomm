@@ -1,6 +1,12 @@
 import api from "./api";
 
 export const addressService = {
+  // POST /api/shop/address/add
+  addAddress: async (addressData) => {
+    const response = await api.post("/shop/address/add", addressData);
+    return response.data;
+  },
+
   // GET /api/shop/address/all
   getAddresses: async () => {
     const response = await api.get("/shop/address/all");
@@ -10,12 +16,6 @@ export const addressService = {
   // GET /api/shop/address/one/:id
   getAddress: async (id) => {
     const response = await api.get(`/shop/address/one/${id}`);
-    return response.data;
-  },
-
-  // POST /api/shop/address/add
-  addAddress: async (addressData) => {
-    const response = await api.post("/shop/address/add", addressData);
     return response.data;
   },
 

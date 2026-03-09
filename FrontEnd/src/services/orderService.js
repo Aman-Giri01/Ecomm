@@ -7,13 +7,13 @@ export const orderService = {
     return response.data;
   },
 
-  // GET /api/shop/order/all-orders  (requires authorize = admin)
-  getAllOrders: async () => {
+  // GET /api/shop/order/all-orders — fetch logged-in user's own orders
+  getOrders: async () => {
     const response = await api.get("/shop/order/all-orders");
     return response.data;
   },
 
-  // GET /api/shop/order/my-orders/:id
+  // GET /api/shop/order/my-orders/:id — single order detail
   getOrder: async (id) => {
     const response = await api.get(`/shop/order/my-orders/${id}`);
     return response.data;

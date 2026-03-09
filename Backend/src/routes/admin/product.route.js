@@ -1,3 +1,29 @@
+// import { Router } from "express";
+// import {
+//   addProduct,
+//   deleteImage,
+//   deleteProduct,
+//   getProduct,
+//   getProducts,
+//   updateImage,
+//   updateProduct,
+// } from "../../controllers/admin/product.controller.js";
+
+// import upload from "../../middlewares/multer.middleware.js";
+
+// const router = Router();
+
+// router.post("/add", upload.single("images"), addProduct);
+// router.patch("/delete-image", deleteImage);
+// router.patch("/update-image", upload.single("images"), updateImage);
+
+// router.get("/all", getProducts);
+// router.get("/:productId", getProduct);
+// router.patch("/:productId", updateProduct);
+// router.delete("/:productId", deleteProduct);
+
+// export default router;
+
 import { Router } from "express";
 import {
   addProduct,
@@ -8,16 +34,17 @@ import {
   updateImage,
   updateProduct,
 } from "../../controllers/admin/product.controller.js";
-
 import upload from "../../middlewares/multer.middleware.js";
 
 const router = Router();
 
+// Specific named routes MUST come before /:productId wildcard
 router.post("/add", upload.single("images"), addProduct);
+router.get("/all", getProducts);
 router.patch("/delete-image", deleteImage);
 router.patch("/update-image", upload.single("images"), updateImage);
 
-router.get("/all", getProducts);
+//  Wildcard routes after named ones
 router.get("/:productId", getProduct);
 router.patch("/:productId", updateProduct);
 router.delete("/:productId", deleteProduct);

@@ -70,7 +70,15 @@ const Login = () => {
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-semibold text-slate-700 dark:text-gray-300 mb-2">Password</label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-sm font-semibold text-slate-700 dark:text-gray-300">Password</label>
+                <Link
+                  to="/forgot-password"
+                  className="text-xs font-semibold text-amber-600 dark:text-amber-400 hover:underline"
+                >
+                  Forgot password?
+                </Link>
+              </div>
               <div className="relative">
                 <FiLock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-gray-500 w-4 h-4" />
                 <input
@@ -97,7 +105,12 @@ const Login = () => {
               disabled={loading}
               className="w-full bg-amber-500 hover:bg-amber-400 active:bg-amber-600 text-white font-bold py-3 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm shadow-lg shadow-amber-500/30 mt-2"
             >
-              {loading ? 'Signing in...' : 'Sign In'}
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin inline-block" />
+                  Signing in...
+                </span>
+              ) : 'Sign In'}
             </button>
           </form>
         </div>

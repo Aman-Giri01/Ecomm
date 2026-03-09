@@ -10,7 +10,19 @@ const Cart = () => {
   const navigate = useNavigate()
   const { cartItems, cartCount, addToCart, removeFromCart, clearCart, loading } = useCart()
 
-  // Calculate totals from cart items
+  // ── Helper: safely extract a plain string ID from a cart item ──
+  // After populate, item.productId is the full Product object.
+  // We need its _id as a plain string for API calls.
+  const getProductId = (item) => {
+    const p = item.productId
+    if (!p) return null
+    // If productId was populated it's an object with _id
+    if (typeof p === 'object' && p._id) return p._id.toString()
+    // If productId is already a plain string / ObjectId
+    return p.toString()
+  }
+
+  // Calculate totals
   const subtotal = cartItems.reduce((sum, item) => {
     const price = item.productId?.salePrice ?? 0
     return sum + price * item.quantity
@@ -89,14 +101,16 @@ const Cart = () => {
             {/* ── Cart Items ── */}
             <div className="lg:col-span-2 space-y-3">
               {cartItems.map((item, idx) => {
-                const product = item.productId
-                const name    = product?.name    ?? 'Unknown product'
-                const image   = product?.images?.[0]?.url ?? ''
-                const price   = product?.salePrice ?? 0
-                const mrp     = product?.price ?? 0
-                const brand   = product?.brand ?? ''
+                // ✅ Safe ID extraction — works whether productId is populated or not
+                const productId = getProductId(item)
+
+                const product  = item.productId
+                const name     = typeof product === 'object' ? (product?.name  ?? 'Unknown product') : 'Unknown product'
+                const image    = typeof product === 'object' ? (product?.images?.[0]?.url ?? '') : ''
+                const price    = typeof product === 'object' ? (product?.salePrice ?? 0) : 0
+                const mrp      = typeof product === 'object' ? (product?.price ?? 0) : 0
+                const brand    = typeof product === 'object' ? (product?.brand ?? '') : ''
                 const discount = mrp > price ? Math.round(((mrp - price) / mrp) * 100) : 0
-                const productId = product?._id ?? item.productId
 
                 return (
                   <div key={idx}
@@ -104,9 +118,12 @@ const Cart = () => {
 
                     {/* Image */}
                     <div
-                      onClick={() => navigate(`/product/${productId}`)}
+                      onClick={() => productId && navigate(`/product/${productId}`)}
                       className="w-20 h-20 shrink-0 bg-slate-50 dark:bg-gray-800 rounded-xl overflow-hidden flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity p-1">
-                      <img src={image} alt={name} className="w-full h-full object-contain" />
+                      {image
+                        ? <img src={image} alt={name} className="w-full h-full object-contain" />
+                        : <FiShoppingCart className="w-8 h-8 text-slate-300" />
+                      }
                     </div>
 
                     {/* Info */}
@@ -114,7 +131,7 @@ const Cart = () => {
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0">
                           <p
-                            onClick={() => navigate(`/product/${productId}`)}
+                            onClick={() => productId && navigate(`/product/${productId}`)}
                             className="text-sm font-semibold text-slate-800 dark:text-gray-100 leading-tight truncate cursor-pointer hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
                             {name}
                           </p>
@@ -136,15 +153,19 @@ const Cart = () => {
                           )}
                         </div>
 
-                        {/* Quantity controls */}
+                        {/* Quantity controls — use productId string, never the object */}
                         <div className="flex items-center bg-amber-500 rounded-xl overflow-hidden shadow-sm">
-                          <button onClick={() => removeFromCart(productId)}
-                            className="text-white px-3 py-1.5 hover:bg-amber-600 transition-colors">
+                          <button
+                            onClick={() => productId && removeFromCart(productId)}
+                            disabled={!productId}
+                            className="text-white px-3 py-1.5 hover:bg-amber-600 transition-colors disabled:opacity-40">
                             {item.quantity === 1 ? <FiTrash2 className="w-3.5 h-3.5" /> : <FiMinus className="w-3.5 h-3.5" />}
                           </button>
                           <span className="text-white font-black text-sm px-3 min-w-[2rem] text-center">{item.quantity}</span>
-                          <button onClick={() => addToCart(productId)}
-                            className="text-white px-3 py-1.5 hover:bg-amber-600 transition-colors">
+                          <button
+                            onClick={() => productId && addToCart(productId)}
+                            disabled={!productId}
+                            className="text-white px-3 py-1.5 hover:bg-amber-600 transition-colors disabled:opacity-40">
                             <FiPlus className="w-3.5 h-3.5" />
                           </button>
                         </div>

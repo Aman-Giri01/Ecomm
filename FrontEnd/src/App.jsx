@@ -9,6 +9,9 @@ import Register      from './pages/Register'
 import ProductsPage  from './pages/ProductsPage'
 import ProductDetail from './pages/ProductDetail'
 import NotFound      from './pages/NotFound'
+import ForgotPassword from './pages/ForgotPassword'
+import VerifyEmail    from './pages/VerifyEmail'
+import ResetPassword  from './pages/ResetPassword'
 
 // Protected pages
 import Cart     from './pages/Cart'
@@ -43,6 +46,9 @@ function App() {
         <Route path="/"          element={<Home />} />
         <Route path="/login"     element={<Login />} />
         <Route path="/register"  element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/verify-email"     element={<VerifyEmail />} />
+        <Route path="/reset-password/:resetPasswordToken" element={<ResetPassword />} />
         <Route path="/products"           element={<ProductsPage />} />
         <Route path="/products/:category" element={<ProductsPage />} />
         <Route path="/product/:id"        element={<ProductDetail />} />
