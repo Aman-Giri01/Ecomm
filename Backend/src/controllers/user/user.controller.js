@@ -85,7 +85,7 @@
 //     maxAge: process.env.JWT_TOKEN_EXPIRY * 60 * 60 * 1000,
 //     httpOnly: true,
 //     secure: true,
-//     sameSite: "none",
+//     eSite: "none",
 //   });
 
 //   new ApiResponse(200, "User Logged In Successfully").send(res);
@@ -223,9 +223,13 @@ export const registerUser = expressAsyncHandler(async (req, res, next) => {
     email,
     "Email Verification",
     "Verify your Ecomm account",
-    `<h1>Verify your email</h1><a href="${verification_url}">Click Here to Verify</a><p>Token: ${emailVerificationToken}</p>`
+    `<h1>Verify your email</h1><a href="${verification_url}">Click Here to Verify</a><p>Token: ${emailVerificationToken}</p>`,
   );
-  new ApiResponse(201, "User Registered Successfully. Please verify your email.", newUser).send(res);
+  new ApiResponse(
+    201,
+    "User Registered Successfully. Please verify your email.",
+    newUser,
+  ).send(res);
 });
 
 export const verifyEmail = expressAsyncHandler(async (req, res, next) => {
@@ -242,7 +246,8 @@ export const verifyEmail = expressAsyncHandler(async (req, res, next) => {
 
   if (!user) return next(new CustomError(400, "Token Expired or Invalid"));
 
-  if (user.isVerified) return next(new CustomError(400, "Email Already Verified"));
+  if (user.isVerified)
+    return next(new CustomError(400, "Email Already Verified"));
 
   user.isVerified = true;
   user.emailVerificationToken = undefined;
@@ -295,11 +300,11 @@ export const resendEmailVerificationLink = expressAsyncHandler(
       email,
       "Email Verification",
       "Resend Verification Link",
-      `<h1>Verify your email</h1><a href="${verification_url}">Click Here to Verify</a><p>Token: ${emailVerificationToken}</p>`
+      `<h1>Verify your email</h1><a href="${verification_url}">Click Here to Verify</a><p>Token: ${emailVerificationToken}</p>`,
     );
 
     new ApiResponse(200, "Email Verification Link Sent Successfully").send(res);
-  }
+  },
 );
 
 export const logoutUser = expressAsyncHandler(async (req, res, next) => {
@@ -318,7 +323,7 @@ export const updateProfile = expressAsyncHandler(async (req, res, next) => {
     {
       new: true,
       runValidators: true,
-    }
+    },
   );
 
   if (!updatedUser) return next(new CustomError(404, "User Not Found"));
@@ -347,7 +352,7 @@ export const forgotPassword = expressAsyncHandler(async (req, res, next) => {
     email,
     "Reset Your Password",
     "Reset Password",
-    `<h1>Reset your password</h1><p>Click the link below to reset your password. This link expires in 10 minutes.</p><a href="${resetPassword_url}">Reset Password</a><p>If you didn't request this, ignore this email.</p>`
+    `<h1>Reset your password</h1><p>Click the link below to reset your password. This link expires in 10 minutes.</p><a href="${resetPassword_url}">Reset Password</a><p>If you didn't request this, ignore this email.</p>`,
   );
 
   new ApiResponse(200, "Reset Password Link Sent Successfully").send(res);
@@ -365,7 +370,10 @@ export const resetPassword = expressAsyncHandler(async (req, res, next) => {
     passwordResetTokenExpiry: { $gt: Date.now() },
   });
 
-  if (!existingUser) return next(new CustomError(400, "Reset link has expired. Please request a new one."));
+  if (!existingUser)
+    return next(
+      new CustomError(400, "Reset link has expired. Please request a new one."),
+    );
 
   existingUser.password = req.body.password;
   existingUser.passwordResetToken = undefined;
