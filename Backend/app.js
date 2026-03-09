@@ -49,6 +49,7 @@ app.get("/api/debug", (req, res) => {
     mongoURL: process.env.MONGODB_URL ? "SET ✅" : "MISSING ❌",
     dbName: process.env.DB_NAME ? "SET ✅" : "MISSING ❌",
     nodeEnv: process.env.NODE_ENV,
+    mongoState: mongoose.connection.readyState,
   })
 })
 app.use(errorMiddleware);
