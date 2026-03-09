@@ -16,7 +16,9 @@ import userRoutes from "./src/routes/user/user.route.js";
 import shopOrderRoutes from "./src/routes/shop/order.route.js"
 import shopAddressRoutes from "./src/routes/shop/address.route.js"
 import shopReviewRoutes from "./src/routes/shop/review.route.js";
-import orderAdminRoutes from "./src/routes/admin/order.route.js"
+import orderAdminRoutes from "./src/routes/admin/order.route.js";
+
+import mongoose from "mongoose";
 
 const app = express();
 
