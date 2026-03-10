@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { UseAuth } from '../context/AuthContext'
 import { FiMail, FiLock, FiEye, FiEyeOff, FiUser, FiPhone, FiSun, FiMoon } from 'react-icons/fi'
 import { useTheme } from '../context/ThemeContext'
+import toast from 'react-hot-toast';
 
 const Register = () => {
   const { register, loading } = UseAuth()
