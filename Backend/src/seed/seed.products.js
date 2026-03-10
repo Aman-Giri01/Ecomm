@@ -447,7 +447,9 @@ async function seed() {
   }
 
   console.log("🔗  Connecting to MongoDB...");
-  await mongoose.connect(uri);
+  await mongoose.connect(uri, {
+        dbName: process.env.DB_NAME,
+      });
   console.log("✅  Connected\n");
 
   let inserted = 0;

@@ -45,15 +45,6 @@ app.use("/api/shop/order",authenticate, shopOrderRoutes);
 app.use("/api/shop/address",authenticate, shopAddressRoutes);
 app.use("/api/shop/review",authenticate, shopReviewRoutes);
 app.use("/api/admin/orders",authenticate,authorize, orderAdminRoutes);
-
-app.get("/api/debug", (req, res) => {
-  res.json({
-    mongoURL: process.env.MONGODB_URL ? "SET ✅" : "MISSING ❌",
-    dbName: process.env.DB_NAME ? "SET ✅" : "MISSING ❌",
-    nodeEnv: process.env.NODE_ENV,
-    mongoState: mongoose.connection.readyState,
-  })
-})
 app.use(errorMiddleware);
 
 export default app;

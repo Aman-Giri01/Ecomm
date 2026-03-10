@@ -45,17 +45,16 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => { loadUser(); }, []);
 
   const register = async (userData) => {
-    try {
-      setError(null); setLoading(true);
-      const response = await authService.register(userData);
-      toast.success(response.message || "Registered! Please verify your email.");
-      return { success: true };
-    } catch (error) {
-      const msg = error.response?.data?.message || "Registration Failed";
-      setError(msg); toast.error(msg);
-      return { success: false, error: msg };
-    } finally { setLoading(false); }
-  };
+  try {
+    setError(null); setLoading(true);
+    const response = await authService.register(userData);
+    return { success: true, message: response.message }; 
+  } catch (error) {
+    const msg = error.response?.data?.message || "Registration Failed";
+    setError(msg); toast.error(msg);
+    return { success: false, error: msg };
+  } finally { setLoading(false); }
+};
 
   const login = async (credentials) => {
     try {

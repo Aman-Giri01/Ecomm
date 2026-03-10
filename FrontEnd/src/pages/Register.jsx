@@ -17,13 +17,19 @@ const Register = () => {
     setFormData({ ...formdata, [e.target.name]: e.target.value })
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    const result = await register(formdata)
-    if (result.success) {
-      // ✅ Navigate to verify-email page, pass email so it can show it + resend
+  e.preventDefault()
+  const result = await register(formdata)
+
+  if (result.success) {
+    if (result.message?.toLowerCase().includes("failed")) {
+      toast.warning("Account created! Verification email failed — verify later from your profile.")
+      navigate('/login')
+    } else {
+      toast.success("Registered! Please check your email to verify.")
       navigate('/verify-email', { state: { email: formdata.email } })
     }
   }
+}
 
   const fields = [
     { name: 'username',      label: 'Username',      type: 'text',  placeholder: 'johndoe',         icon: FiUser  },

@@ -204,6 +204,34 @@ import CustomError from "../../utils/CustomError.util.js";
 import { generateToken } from "../../utils/jwt.util.js";
 import { sendEmail } from "../../utils/nodemailer.util.js";
 
+// export const registerUser = expressAsyncHandler(async (req, res, next) => {
+//   const { username, email, password, contactNumber } = req.body;
+
+//   const newUser = await UserModel.create({
+//     username,
+//     email,
+//     password,
+//     contactNumber,
+//   });
+
+//   let emailVerificationToken = newUser.generateEmailVerificationToken();
+//   await newUser.save();
+
+//   let verification_url = `http://localhost:5173/verify-email/${emailVerificationToken}`;
+
+//   await sendEmail(
+//     email,
+//     "Email Verification",
+//     "Verify your Ecomm account",
+//     `<h1>Verify your email</h1><a href="${verification_url}">Click Here to Verify</a><p>Token: ${emailVerificationToken}</p>`,
+//   );
+//   new ApiResponse(
+//     201,
+//     "User Registered Successfully. Please verify your email.",
+//     newUser,
+//   ).send(res);
+// });
+
 export const registerUser = expressAsyncHandler(async (req, res, next) => {
   const { username, email, password, contactNumber } = req.body;
 
@@ -217,18 +245,26 @@ export const registerUser = expressAsyncHandler(async (req, res, next) => {
   let emailVerificationToken = newUser.generateEmailVerificationToken();
   await newUser.save();
 
-  let verification_url = `http://localhost:5173/verify-email/${emailVerificationToken}`;
+  let emailSent = true;
 
-  await sendEmail(
-    email,
-    "Email Verification",
-    "Verify your Ecomm account",
-    `<h1>Verify your email</h1><a href="${verification_url}">Click Here to Verify</a><p>Token: ${emailVerificationToken}</p>`,
-  );
+  try {
+    let verification_url = `http://localhost:5173/verify-email/${emailVerificationToken}`;
+    await sendEmail(
+      email,
+      "Email Verification",
+      "Verify your Ecomm account",
+      `<h1>Verify your email</h1><a href="${verification_url}">Click Here to Verify</a><p>Token: ${emailVerificationToken}</p>`,
+    );
+  } catch (err) {
+    emailSent = false;
+  }
+
   new ApiResponse(
     201,
-    "User Registered Successfully. Please verify your email.",
-    newUser,
+    emailSent
+      ? "User Registered Successfully. Please verify your email."
+      : "Account created! Verification email failed — you can verify later from your profile.",
+    newUser, 
   ).send(res);
 });
 
