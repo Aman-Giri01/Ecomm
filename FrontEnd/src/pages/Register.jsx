@@ -23,7 +23,7 @@ const Register = () => {
 
   if (result.success) {
     if (result.message?.toLowerCase().includes("failed")) {
-      toast.warning("Account created! Verification email failed — verify later from your profile.")
+      toast("Account created! Verification email failed — verify later from your profile.")
       navigate('/login')
     } else {
       toast.success("Registered! Please check your email to verify.")
